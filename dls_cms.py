@@ -193,6 +193,27 @@ class DLSCMS:
             return self.current_time
         self.current_time = max(self.current_time, t)
         return t
+    
+        # ── Space estimation (IMPORTANT for comparison) ─────────────
+    def space_bytes(self) -> int:
+        """
+        Estimate memory usage of DLS-CMS.
+
+        Each active entry stores:
+            - value (float) → 8 bytes
+            - timestamp (int) → 4 bytes
+            - key (bucket index) → ~4 bytes
+        Approx = 16 bytes per active counter
+        """
+
+        bytes_per_entry = 16
+
+        total_entries = (
+            self.cms_plus.active_count() +
+            self.cms_minus.active_count()
+        )
+
+        return total_entries * bytes_per_entry
 
 
 # ═══════════════════════════════════════════════════════════════
